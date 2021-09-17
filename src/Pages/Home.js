@@ -1,13 +1,13 @@
-/* eslint-disable */
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import { Modal } from 'antd';
 
 import { ReactComponent as BottleSvg } from 'assets/images/bottle.svg';
-// 애니메이션 위에 어떤 문구하나 넣어주고 ; Wanna know about beer?
-// Punk API에 있는 맥주병 그대로 애니메이션으로 흰 바탕 정중앙에 돌리고
-// 클릭 시 나이 묻는 컨펌창 띄워서 yes면 beerlist로 진입
+
 const Home = () => {
+	const [isModalVisible, setIsModalVisible] = useState(false);
+
 	const location = useLocation();
 	const history = useHistory();
 	console.log(location);
@@ -16,11 +16,24 @@ const Home = () => {
 		history.replace('/home');
 	}
 
+	const showModal = () => {
+		setIsModalVisible(true);
+	};
+
+	const handleOk = () => {
+		setIsModalVisible(false);
+		history.push('/beerlist');
+	};
+
+	const handleCancel = () => {
+		setIsModalVisible(false);
+	};
+
 	return (
 		<HomeWrapper>
 			<WelcomeTitle>Wanna know about beer?</WelcomeTitle>
-      <WelcomeSubtitle>Click this beer below</WelcomeSubtitle>
-			<BottleWrapper>
+			<WelcomeSubtitle>Click this beer below</WelcomeSubtitle>
+			<BottleWrapper onClick={showModal}>
 				<div className='bottle-face'>
 					<StyledBottle />
 				</div>
@@ -34,6 +47,9 @@ const Home = () => {
 					<StyledBottle />
 				</div>
 			</BottleWrapper>
+			<StyledModal title='Were you born after 2001?' visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+				<p>We don&apos;t sell alcohol to minors.</p>
+			</StyledModal>
 		</HomeWrapper>
 	);
 };
@@ -53,8 +69,8 @@ const BottleWrapper = styled.div`
 	width: 40px;
 	transform-style: preserve-3d;
 	animation: ${spin} 5s linear infinite;
-  cursor: pointer;
-  
+	cursor: pointer;
+
 	.bottle-face {
 		position: absolute;
 		width: 40px;
@@ -119,4 +135,28 @@ const HomeWrapper = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+`;
+
+const StyledModal = styled(Modal)`
+	.ant-modal-content {
+		background-color: #000000;
+		.ant-modal-header {
+			padding: 24px;
+			background-color: #000000;
+			border-bottom: none;
+			.ant-modal-title {
+				font-size: 28px;
+				color: #ffffff;
+			}
+		}
+
+		.ant-modal-body {
+			color: #ffffff;
+			font-size: 18px;
+		}
+
+		.ant-modal-footer {
+			border-top: none;
+		}
+	}
 `;
