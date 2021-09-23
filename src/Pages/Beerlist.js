@@ -1,11 +1,11 @@
 /* eslint-disable react/display-name */
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { useState, forwardRef, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import MaterialTable from 'material-table';
+import MaterialTable, { MTableCell } from 'material-table';
 
-import { getBeerListRequest } from 'store/actions/beerlist';
+import { getBeerListRequest, selectBeerInTable } from 'store/actions/beerlist';
 
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -23,9 +23,12 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
+import BeerModal from 'components/BeerList/BeerModal';
+
 const Beerlist = () => {
-	const { allBeerList, filteredBeerList } = useSelector((state) => state.beerlist);
+	const { allBeerList, filteredBeerList, selectedBeer } = useSelector((state) => state.beerlist);
 	const dispatch = useDispatch();
+	const beerModal = useRef(null);
 
 	const tableIcons = {
 		Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -47,11 +50,17 @@ const Beerlist = () => {
 		ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 	};
 
+	const handleBeerClick = (index) => {
+		console.log();
+		dispatch(selectBeerInTable(filteredBeerList[index]));
+		beerModal.current.handleOpen();
+	};
+
 	useEffect(() => {
 		dispatch(getBeerListRequest());
 	}, []);
 
-	console.log(filteredBeerList);
+	// console.log(filteredBeerList);
 
 	return filteredBeerList.length > 0 ? (
 		<div style={{ width: '800px' }}>
@@ -60,13 +69,14 @@ const Beerlist = () => {
 				options={{
 					search: false,
 				}}
+				onRowClick={(event, rowData) => handleBeerClick(rowData.tableData.id)}
 				columns={[
 					{ title: 'Name', field: 'name' },
-					{ title: 'TagLine', field: 'tagline' },
-					{ title: 'First Brewed', field: 'first_brewed' },
-					{ title: 'ABV', field: 'abv', type: 'numeric' },
-					{ title: 'IBU', field: 'ibu', type: 'numeric' },
-					{ title: 'Ph', field: 'ph', type: 'numeric' },
+					{ title: 'TagLine', field: 'tagline', disableClick: true },
+					{ title: 'First Brewed', field: 'first_brewed', disableClick: true },
+					{ title: 'ABV', field: 'abv', type: 'numeric', disableClick: true },
+					{ title: 'IBU', field: 'ibu', type: 'numeric', disableClick: true },
+					{ title: 'Ph', field: 'ph', type: 'numeric', disableClick: true },
 				]}
 				data={filteredBeerList.map((beer) => {
 					const { name, tagline, first_brewed, abv, ibu, ph } = beer;
@@ -80,8 +90,19 @@ const Beerlist = () => {
 						ph,
 					};
 				})}
+				components={{
+					Cell: (props) =>
+						props.columnDef.field === 'name' ? (
+							<>
+								<NameCell {...props} />
+							</>
+						) : (
+							<MTableCell {...props} disableClick />
+						),
+				}}
 				title='Beer List'
 			/>
+			<BeerModal ref={beerModal} beer={selectedBeer} />
 		</div>
 	) : (
 		<p>데이터가 없습니다</p>
@@ -89,3 +110,11 @@ const Beerlist = () => {
 };
 
 export default Beerlist;
+
+const NameCell = styled(MTableCell)`
+	cursor: pointer;
+
+	&:hover {
+		font-weight: bold !important;
+	}
+`;
