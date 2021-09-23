@@ -5,13 +5,13 @@ import { GET_BEER_LIST_REQUEST, GET_BEER_LIST_SUCCESS, GET_BEER_LIST_FAILURE } f
 enableES5();
 
 const INITIAL_STATE = {
-  isLoading: false,
-  errorMessage: "",
+	isLoading: false,
+	errorMessage: '',
 	allBeerList: [],
 	filteredBeerList: [],
 };
 
-export default beerlist = (state = INITIAL_STATE, action) => {
+export default function beerlist(state = INITIAL_STATE, action) {
 	return produce(state, (draft) => {
 		switch (action.type) {
 			case GET_BEER_LIST_REQUEST:
@@ -20,14 +20,14 @@ export default beerlist = (state = INITIAL_STATE, action) => {
 			case GET_BEER_LIST_SUCCESS:
 				draft.allBeerList = action.payload;
 				draft.filteredBeerList = action.payload;
-        draft.isLoading = false;
+				draft.isLoading = false;
 				break;
 			case GET_BEER_LIST_FAILURE:
 				draft.isLoading = false;
-        draft.errorMessage = action.payload;
-        break;
+				draft.errorMessage = action.payload;
+				break;
 			default:
 				return state;
 		}
 	});
-};
+}
