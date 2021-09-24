@@ -32,3 +32,9 @@ export const switchTableColumns = (sourceIndex, destinationIndex) => {
 	};
 };
 
+export const filterByAbv = (value) => {
+	return {
+		type: 'FILTER_BY_ABV',
+		payload: value,
+	};
+};

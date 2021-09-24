@@ -3,7 +3,7 @@ import React, { useState, forwardRef, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import MaterialTable, { MTableCell } from 'material-table';
+import MaterialTable, { MTableCell, MTableFilterRow } from 'material-table';
 
 import { getBeerListRequest, selectBeerInTable, switchTableColumns } from 'store/actions/beerlist';
 
@@ -25,6 +25,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 import BeerModal from 'components/BeerList/BeerModal';
+import SelectAbv from 'components/BeerList/SelectAbv';
 
 const Beerlist = () => {
 	const { allBeerList, filteredBeerList, selectedBeer, tableColumns } = useSelector((state) => state.beerlist);
@@ -70,7 +71,10 @@ const Beerlist = () => {
 					<HomeIcon fontSize='large' />
 				</Link>
 			</HomeLinkWrapper>
-
+			<AbvFilterWrapper>
+				<h3>Filter by ABV</h3>
+				<SelectAbv />
+			</AbvFilterWrapper>
 			<MaterialTable
 				icons={tableIcons}
 				options={{
@@ -126,8 +130,19 @@ const NameCell = styled(MTableCell)`
 
 const HomeLinkWrapper = styled.div`
 	width: 100%;
-  height: 80px;
+	height: 80px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+`;
+
+const AbvFilterWrapper = styled.div`
+	width: 100%;
+	margin-bottom: 12px;
+
+	h3 {
+		font-weight: 400;
+		font-size: 18px;
+		margin-bottom: 8px;
+	}
 `;
