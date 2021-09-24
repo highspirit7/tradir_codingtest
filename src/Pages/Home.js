@@ -10,7 +10,6 @@ const Home = () => {
 
 	const location = useLocation();
 	const history = useHistory();
-	console.log(location);
 
 	if (location.pathname !== '/home') {
 		history.replace('/home');

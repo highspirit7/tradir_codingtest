@@ -6,6 +6,9 @@ import store from './store';
 import Routes from './Routes';
 import GlobalStyles from 'styles/GlobalStyles';
 
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+
 ReactDOM.render(
 	<Provider store={store}>
 		<GlobalStyles />

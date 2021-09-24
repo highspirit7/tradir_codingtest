@@ -1,8 +1,8 @@
-/* eslint-disable react/display-name */
 import React, { useState, forwardRef, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory, Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
+import { Spin } from 'antd';
 import MaterialTable, { MTableCell, MTableFilterRow } from 'material-table';
 
 import { getBeerListRequest, selectBeerInTable, switchTableColumns } from 'store/actions/beerlist';
@@ -53,7 +53,6 @@ const Beerlist = () => {
 	};
 
 	const handleBeerClick = (index) => {
-		console.log();
 		dispatch(selectBeerInTable(filteredBeerList[index]));
 		beerModal.current.handleOpen();
 	};
@@ -61,8 +60,6 @@ const Beerlist = () => {
 	useEffect(() => {
 		dispatch(getBeerListRequest());
 	}, []);
-
-	// console.log(filteredBeerList);
 
 	return filteredBeerList.length > 0 ? (
 		<div style={{ width: '800px' }}>
@@ -114,7 +111,7 @@ const Beerlist = () => {
 			<BeerModal ref={beerModal} beer={selectedBeer} />
 		</div>
 	) : (
-		<p>데이터가 없습니다</p>
+		<Spin size='large' />
 	);
 };
 

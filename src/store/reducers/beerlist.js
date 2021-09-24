@@ -77,8 +77,6 @@ export default function beerlist(state = INITIAL_STATE, action) {
 					}
 				});
 
-				console.log(arrays.flat());
-
 				if (arrays.flat().length > 0) {
 					draft.filteredBeerList = arrays.flat();
 				} else {
