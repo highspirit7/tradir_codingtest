@@ -47,7 +47,13 @@ const Home = () => {
 					<StyledBottle />
 				</div>
 			</BottleWrapper>
-			<StyledModal title='Were you born after 2001?' visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+			<StyledModal
+				title='Were you born after 2001?'
+				visible={isModalVisible}
+				onOk={handleOk}
+				onCancel={handleCancel}
+				okText='Yes'
+				cancelText='No'>
 				<p>We don&apos;t sell alcohol to minors.</p>
 			</StyledModal>
 		</HomeWrapper>

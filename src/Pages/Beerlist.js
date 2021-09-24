@@ -1,12 +1,13 @@
 /* eslint-disable react/display-name */
 import React, { useState, forwardRef, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, Link } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import MaterialTable, { MTableCell } from 'material-table';
 
-import { getBeerListRequest, selectBeerInTable } from 'store/actions/beerlist';
+import { getBeerListRequest, selectBeerInTable, switchTableColumns } from 'store/actions/beerlist';
 
+import HomeIcon from '@material-ui/icons/Home';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -26,7 +27,7 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import BeerModal from 'components/BeerList/BeerModal';
 
 const Beerlist = () => {
-	const { allBeerList, filteredBeerList, selectedBeer } = useSelector((state) => state.beerlist);
+	const { allBeerList, filteredBeerList, selectedBeer, tableColumns } = useSelector((state) => state.beerlist);
 	const dispatch = useDispatch();
 	const beerModal = useRef(null);
 
@@ -64,20 +65,24 @@ const Beerlist = () => {
 
 	return filteredBeerList.length > 0 ? (
 		<div style={{ width: '800px' }}>
+			<HomeLinkWrapper>
+				<Link to='/'>
+					<HomeIcon fontSize='large' />
+				</Link>
+			</HomeLinkWrapper>
+
 			<MaterialTable
 				icons={tableIcons}
 				options={{
 					search: false,
+					draggable: true,
+					sorting: false,
+				}}
+				onColumnDragged={(sourceIndex, destinationIndex) => {
+					dispatch(switchTableColumns(sourceIndex, destinationIndex));
 				}}
 				onRowClick={(event, rowData) => handleBeerClick(rowData.tableData.id)}
-				columns={[
-					{ title: 'Name', field: 'name' },
-					{ title: 'TagLine', field: 'tagline', disableClick: true },
-					{ title: 'First Brewed', field: 'first_brewed', disableClick: true },
-					{ title: 'ABV', field: 'abv', type: 'numeric', disableClick: true },
-					{ title: 'IBU', field: 'ibu', type: 'numeric', disableClick: true },
-					{ title: 'Ph', field: 'ph', type: 'numeric', disableClick: true },
-				]}
+				columns={tableColumns.map((column) => ({ ...column }))}
 				data={filteredBeerList.map((beer) => {
 					const { name, tagline, first_brewed, abv, ibu, ph } = beer;
 
@@ -117,4 +122,12 @@ const NameCell = styled(MTableCell)`
 	&:hover {
 		font-weight: bold !important;
 	}
+`;
+
+const HomeLinkWrapper = styled.div`
+	width: 100%;
+  height: 80px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 `;
